@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Coins</title>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Flask Coins</h1>
+        <div class="loader"></div> 
+        <h6 id="text"></h6>
+        <button type="button" onclick="getAllCoins()">getAllCoins</button>
+        <button type="button" onclick="getAllPrices()">getAllPrices</button>
+        <ul>
+            {% for coin in coins %}
+            <li><a href="{{ url_for('coins.getPrice' , currency=coin.currency) }}">{{coin.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        textElm = document.querySelector('#text');
+        loaderElm = document.querySelector('.loader');
+        function getAllPrices(){
+            loaderElm.style.display = "block";
+            fetch('/getAllPrices', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ all: true }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                textElm.textContent = data.result;
+                loaderElm.style.display = "none";
+            });
+        };
+
+        function getAllCoins() {
+            loaderElm.style.display = "block";
+            fetch('/getAllCoin', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ all: true }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                textElm.textContent = data.result+'\n'+'Taskid:'+'\n'+ data.task_id;
+                loaderElm.style.display = "none";
+            });
+        }
+    </script>
+</body>
+</html>
+

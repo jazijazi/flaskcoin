@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='main.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ this_coin.fullName }}</h2>
+        <h6 class="currencyValue">{{ this_coin.currency }}</h6>
+        <h3 class="realtime">Real Time Price is: <span id="realtimeprice">...</span> in <span id="realdate">...</span> </h3>
+        <p class="detail">Precision: {{ this_coin.precision}}</p>
+        <p class="detail">Confirms: {{ this_coin.confirms}}</p>
+        <p class="detail">Contractaddress: {{ this_coin.contractAddress}}</p> 	
+        <p class="detail">Withdrawalminsize: {{ this_coin.withdrawalMinSize}}</p>
+        <p class="detail">Withdrawalminfee: {{ this_coin.withdrawalMinFee}}</p>
+        <!-- {% for price in this_coin.prices %}
+            <p>{{ price.price }}</p>
+        {% endfor %} -->
+        <canvas id="myChart" style="width:100%;max-width:800px"></canvas>
+    </div>
+</body>
+
+    <script>
+        function create_chart(data) {
+            var xVal = []
+            var yVal = []
+            for (var [key,val] of Object.entries(data)) {
+                //console.log("Key="+new Date(key));
+                xVal.push(new Date(key).toLocaleString());
+                //console.log("Value="+val);
+                yVal.push(val)
+            }
+            new Chart("myChart", {
+                type: "line",
+                data: {
+                  labels: xVal,
+                  datasets: [{
+                    label: 'Price',
+                    backgroundColor: "rgba(132, 240, 161, 0.2)",
+                    borderColor: "rgba(12, 240, 23 ,0.5)",
+                    data: yVal,
+                    fill: false,
+                  }]
+                },
+                options:{
+                    layout: {
+                        padding: 20
+                    },
+                    scales: {
+                        yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'USD'
+                        }
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'TIME'
+                            }
+                        }]
+                    }     
+                }
+              });
+        }
+        create_chart({{ data|safe }})
+
+        const this_currency = document.querySelector('h6').innerHTML;
+        const realtimeprice = document.querySelector('span#realtimeprice');
+        const realdate = document.querySelector('span#realdate');
+        //const reqInterval = undefined;
+
+        var socket = io.connect();
+        socket.on('connect' , function(msg){
+            //socket.emit('RealTimePrice' , {'currency':this_currency })
+            const reqInterval = setInterval(sendReq , 5000 , {'currency':this_currency});
+        });
+
+        function sendReq(data){
+            socket.emit('RealTimePrice' , data)
+        }
+        //Listen on event with coin real currency name
+        socket.on(this_currency , function(msg){
+            console.log(msg)
+            if(msg.time > realdate.innerHTML){ //check received value newer than old one
+                realtimeprice.innerHTML = msg.value;
+                realdate.innerHTML = msg.time;
+            }
+        });
+
+        socket.on('disconnect' , function(msg){
+            clearInterval(reqInterval);
+        });
+
+    </script>
+</html>

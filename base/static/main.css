@@ -1,0 +1,104 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+#text{
+    font-size: 3rem;
+    padding: 5px;
+    background-color: #2d5d0dd9;
+    color: #f2f2f2;
+    margin-bottom: 5rem;
+    border-radius: 10px;
+    border: 5px #41e64129 solid;
+}
+.container{
+    width: 900px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 2rem;
+    
+}
+h1{
+    font-size: 10rem;
+    margin-bottom: 1rem;
+    color: teal;
+}
+h2{
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    color: teal; 
+}
+button{
+    padding: 2rem;
+    background-color: green;
+    color: aliceblue;
+    margin-bottom: 1rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+    font-size: 2rem;
+    border-radius: 8px;
+    border-color: #77e346;
+    box-shadow: 3px 2px 5px #75c59f;
+}
+button:hover{
+    background-color: #41b60c;
+    border-color: lime;
+    box-shadow: 5px 5px 5px #43c096;
+}
+ul{
+    margin-top: 2rem;
+    
+}
+li{
+    display:inline;
+    padding-left: 1rem;
+    font-size: 2rem;
+    background-color: #7a913c;
+    margin: 3rem;
+    padding-right: 1rem;
+    border-radius: 10px;
+}
+li:hover{
+    background-color: green;
+}
+ul li a{
+    text-decoration: none;
+    color: antiquewhite;
+}
+.loader {
+    display: none;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #39e56d;
+    margin: 2rem auto;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+#myChart{
+    background-color: rgb(238, 238, 238);
+    margin-top: 1rem;
+}  
+.detail{
+    font-size: 2rem;
+    color: #7a913c;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.currencyValue{
+    display: none;
+}
+.realtime{
+    background-color: #3eab0d;
+    color: #f2f2f2;
+    padding: 15px;
+    font-size: 2rem;
+    margin: 15px 30px;
+}
